@@ -80,7 +80,7 @@ function renderBlock(number) {
     "0"
   )}</div>
       <h3 class="name" id="name-${number}"></h3>
-      <div class="type" id="type-${number}"><div id="type-name-${number}"></div></div>
+      <div class="type" id="type-${number}"><div class="types" id="type-name-${number}"></div></div>
       </div>
       </div>`;
 }
