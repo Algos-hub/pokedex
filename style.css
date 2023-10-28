@@ -108,20 +108,23 @@ button:disabled:hover {
 
 .skip {
   font-weight: bold;
+  font-size: x-large;
+
   background-color: rgba(255, 255, 255, 0.6);
   border-radius: 10px;
-  width: 25px;
-  height: 25px;
+  width: 50px;
+  height: 50px;
   text-align: center;
   margin: 3px;
 }
 
 .pagination-button {
   font-weight: bold;
+  font-size: x-large;
   background-color: rgba(255, 255, 255, 0.6);
   border-radius: 15px;
-  width: 40px;
-  height: 40px;
+  width: 60px;
+  height: 60px;
   text-align: center;
   margin: 3px;
 }
@@ -129,10 +132,12 @@ button:disabled:hover {
 #next,
 #back {
   font-weight: bold;
+  font-size: x-large;
+
   background-color: rgba(255, 255, 255, 0.6);
   border-radius: 15px;
-  width: 60px;
-  height: 40px;
+  width: 80px;
+  height: 60px;
   text-align: center;
   margin: 5px;
 }
