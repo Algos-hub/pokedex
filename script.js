@@ -3,7 +3,7 @@
 // Initializing necessary values
 
 let id = 1;
-let pageLimit = 18;
+let pageLimit = 12;
 let page = 1;
 let pokemonID;
 let dataID;
@@ -97,7 +97,7 @@ function renderBlocks(page) {
         </div>
         <div class="info">
         <div class="id" id="id-${id}">#${String(id).padStart(4, "0")}</div>
-        <h3 class="name" id="name-${id}"></h3>
+        <h3 class="name";" id="name-${id}"></h3>
         <div class="type" id="type-${id}"><div class="types" id="type-name-${id}"></div></div>
         </div>
         </div>`;
@@ -199,7 +199,7 @@ function currPage(i) {
 // Creates HTML buttons from pagination array values
 function pageNumber(i) {
   numberContainer.innerHTML = "";
-  let pages = pagination(i, 57);
+  let pages = pagination(i, 85);
   for (let j = 0; j < pages.length; j++) {
     numberContainer.innerHTML += `
         <button class="pagination-button page-${
@@ -212,7 +212,7 @@ function pageNumber(i) {
 
 // Adds functionality to buttons
 function pageButtons() {
-  pagination(page, 57).forEach((el) => {
+  pagination(page, 85).forEach((el) => {
     if (el !== "...") {
       document
         .querySelector(`.page-${el}`)
@@ -225,7 +225,7 @@ function pageButtons() {
           if (el === 1) {
             disableFirst(true);
           }
-          if (el === 57) {
+          if (el === 85) {
             disableLast(true);
           }
           page = el;
@@ -393,100 +393,101 @@ renderBlocks(page);
 loadNewPage(1);
 disableFirst(true);
 pageButtons();
+/*
+for (
+  let i = pageLimit * (page - 1) + 1;
+  i <= pageLimit * page && i <= 1010;
+  i++
+) {
+  document
+    .getElementById(`pokemon-${i}`)
+    .addEventListener("click", function () {});
+}
 
-// for (
-//   let i = pageLimit * (page - 1) + 1;
-//   i <= pageLimit * page && i <= 1010;
-//   i++
-// ) {
-//   document
-//     .getElementById(`pokemon-${i}`)
-//     .addEventListener("click", function () {});
-// }
+const modal = document.querySelector(".modal");
+const overlay = document.querySelector(".overlay");
+const btnCloseModal = document.querySelector(".close-modal");
 
-// const modal = document.querySelector(".modal");
-// const overlay = document.querySelector(".overlay");
-// const btnCloseModal = document.querySelector(".close-modal");
+const openModal = (i) => {
+  modal.classList.remove("hidden");
+  overlay.classList.remove("hidden");
+  document.querySelector(
+    ".modal"
+  ).innerHTML = `<button class="close-modal">&times;</button>
+      <div class="pokemon l" id="pokemon-${i}-l">
+      <div class="imgContainer l" id="imgContainer-${i}-l">
+      <img class="img l" id="img-${i}-l" src="" alt="" />
+      </div>
+      <div class="info l">
+      <div class="id l" id="id-${i}-l">#${String(i).padStart(4, "0")}</div>
+      <h3 class="name l" id="name-${i}-l"></h3>
+      <div class="height l" id="height-${i}">Height: <span id="height-${i}-l"></span>cm</div>
+      <div class="weight l" id="weight-${i}">Weight: <span id="weight-${i}-l"></span>kg</div>
+      <div class="type l" id="type-${i}-l"></div>
+      </div>
+      </div>`;
+  fetch(`https://pokeapi.co/api/v2/pokemon/${i}/`)
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error(`${errorMsg} (${res.status})`);
+      }
+      return res.json();
+    })
+    .then((data) => {
+      document
+        .getElementById(`pokemon-${data.id}-l`)
+        .classList.add(`${data.types[0].type.name}`);
+      document.getElementById(`name-${data.id}-l`).textContent = `${correctName(
+        data.name
+      )}`;
+      for (let j = 0; j < data.types.length; j++) {
+        document.getElementById(
+          `type-${data.id}-l`
+        ).innerHTML += `<div class="${
+          data.types[j].type.name
+        } box" id="type-name-${j}">${correctName(
+          data.types[j].type.name
+        )}</div>`;
+      }
+      document.getElementById(`img-${data.id}-l`).alt = `${correctName(
+        data.name
+      )}`;
+      document.getElementById(
+        `img-${data.id}-l`
+      ).src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${data.id}.png`;
+      document.getElementById(`height-${data.id}-l`).textContent =
+        data.height * 10;
+      document.getElementById(`weight-${data.id}-l`).textContent =
+        data.weight / 10;
+      btnCloseModal.addEventListener("click", closeModal);
+    });
+};
 
-// const openModal = (i) => {
-//   modal.classList.remove("hidden");
-//   overlay.classList.remove("hidden");
-//   document.querySelector(
-//     ".modal"
-//   ).innerHTML = `<button class="close-modal">&times;</button>
-//       <div class="pokemon l" id="pokemon-${i}-l">
-//       <div class="imgContainer l" id="imgContainer-${i}-l">
-//       <img class="img l" id="img-${i}-l" src="" alt="" />
-//       </div>
-//       <div class="info l">
-//       <div class="id l" id="id-${i}-l">#${String(i).padStart(4, "0")}</div>
-//       <h3 class="name l" id="name-${i}-l"></h3>
-//       <div class="height l" id="height-${i}">Height: <span id="height-${i}-l"></span>cm</div>
-//       <div class="weight l" id="weight-${i}">Weight: <span id="weight-${i}-l"></span>kg</div>
-//       <div class="type l" id="type-${i}-l"></div>
-//       </div>
-//       </div>`;
-//   fetch(`https://pokeapi.co/api/v2/pokemon/${i}/`)
-//     .then((res) => {
-//       if (!res.ok) {
-//         throw new Error(`${errorMsg} (${res.status})`);
-//       }
-//       return res.json();
-//     })
-//     .then((data) => {
-//       document
-//         .getElementById(`pokemon-${data.id}-l`)
-//         .classList.add(`${data.types[0].type.name}`);
-//       document.getElementById(`name-${data.id}-l`).textContent = `${correctName(
-//         data.name
-//       )}`;
-//       for (let j = 0; j < data.types.length; j++) {
-//         document.getElementById(
-//           `type-${data.id}-l`
-//         ).innerHTML += `<div class="${
-//           data.types[j].type.name
-//         } box" id="type-name-${j}">${correctName(
-//           data.types[j].type.name
-//         )}</div>`;
-//       }
-//       document.getElementById(`img-${data.id}-l`).alt = `${correctName(
-//         data.name
-//       )}`;
-//       document.getElementById(
-//         `img-${data.id}-l`
-//       ).src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${data.id}.png`;
-//       document.getElementById(`height-${data.id}-l`).textContent =
-//         data.height * 10;
-//       document.getElementById(`weight-${data.id}-l`).textContent =
-//         data.weight / 10;
-//       btnCloseModal.addEventListener("click", closeModal);
-//     });
-// };
+const closeModal = () => {
+  modal.classList.add("hidden");
+  overlay.classList.add("hidden");
+};
+function expandPokemon() {
+  for (
+    let i = pageLimit * (page - 1) + 1;
+    i <= pageLimit * page && i <= 1010;
+    i++
+  ) {
+    document
+      .getElementById(`pokemon-${i}`)
+      .addEventListener("click", function () {
+        openModal(i);
+      });
+  }
+}
 
-// const closeModal = () => {
-//   modal.classList.add("hidden");
-//   overlay.classList.add("hidden");
-// };
-// function expandPokemon() {
-//   for (
-//     let i = pageLimit * (page - 1) + 1;
-//     i <= pageLimit * page && i <= 1010;
-//     i++
-//   ) {
-//     document
-//       .getElementById(`pokemon-${i}`)
-//       .addEventListener("click", function () {
-//         openModal(i);
-//       });
-//   }
-// }
+expandPokemon();
+document.querySelector(".close-modal").addEventListener("click", closeModal());
+overlay.addEventListener("click", closeModal);
 
-// expandPokemon();
-// btnCloseModal.addEventListener("click", closeModal);
-// overlay.addEventListener("click", closeModal);
-
-// document.addEventListener("keydown", function (event) {
-//   if (event.key === "Escape" && !modal.classList.contains("hidden")) {
-//     closeModal();
-//   }
-// });
+document.addEventListener("keydown", function (event) {
+  if (event.key === "Escape" && !modal.classList.contains("hidden")) {
+    closeModal();
+  }
+});
+*/
