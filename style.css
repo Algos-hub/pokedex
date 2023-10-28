@@ -2,9 +2,7 @@
 @import url("https://fonts.googleapis.com/css?family=Lato:300,400&display=swap");
 
 body {
-  background: #efefbb;
-  background: -webkit-linear-gradient(to right, #d4d3dd, #efefbb);
-  background: linear-gradient(to right, #d4d3dd, #efefbb);
+  background: #efbbbb;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -88,7 +86,14 @@ button:disabled:hover {
   margin: 15px 0 7px;
   letter-spacing: 1px;
 }
-
+/*
+.pokemon:hover {
+  cursor: pointer;
+}
+.pokemon.l:hover {
+  cursor: default;
+}
+*/
 #next,
 #back,
 #numbers {
@@ -130,58 +135,183 @@ button:disabled:hover {
   margin: 5px;
 }
 
-.fire {
-  background-color: #fddfdf;
+.types {
+  display: inline-flex;
+  justify-content: center;
+  width: 130px;
 }
 
-.grass {
-  background-color: #defde0;
+.box {
+  display: inline-flex;
+  border: 2px solid #a4a4a4;
+  border-radius: 5px;
+  max-width: 60px;
+  width: 50%;
+  margin-left: 2px;
+  margin-right: 2px;
+  justify-content: center;
 }
 
-.electric {
-  background-color: #fcf7de;
+.fire.box {
+  background-color: #fd7d24;
+  color: #fff;
+  text-align: center;
+}
+.grass.box {
+  background-color: #9bcc50;
+  color: #212121;
+}
+.electric.box {
+  background-color: #eed535;
+  color: #212121;
+}
+.water.box {
+  background-color: #4592c4;
+  color: #fff;
+}
+.ground.box {
+  background: linear-gradient(180deg, #f7de3f 50%, #ab9842 50%);
+  color: #212121;
+}
+.rock.box {
+  background-color: #a38c21;
+  color: #fff;
+}
+.fairy.box {
+  background-color: #fdb9e9;
+  color: #212121;
+}
+.poison.box {
+  background-color: #b97fc9;
+  color: #fff;
+}
+.bug.box {
+  background-color: #729f3f;
+  color: #fff;
+}
+.dragon.box {
+  background: linear-gradient(180deg, #53a4cf 50%, #f16e57 50%);
+  color: #fff;
+}
+.psychic.box {
+  background-color: #f366b9;
+  color: #fff;
+}
+.flying.box {
+  background: -webkit-linear-gradient(270deg, #3dc7ef 50%, #bdb9b8 50%);
+  color: #212121;
+}
+.fighting.box {
+  background-color: #d56723;
+  color: #fff;
+}
+.normal.box {
+  background-color: #a4acaf;
+  color: #212121;
+}
+.steel.box {
+  background-color: #9eb7b8;
+  color: #212121;
+}
+.ice.box {
+  background-color: #51c4e7;
+  color: #212121;
+}
+.dark.box {
+  background-color: #707070;
+  color: #fff;
+}
+.ghost.box {
+  background-color: #7b62a3;
+  color: #fff;
 }
 
-.water {
-  background-color: #def3fd;
+h2 {
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
 }
 
-.ground {
-  background-color: #f4e7da;
+p {
+  font-size: 1.8rem;
+}
+.show-modal {
+  font-size: 2rem;
+  font-weight: 600;
+  padding: 1.75rem 3.5rem;
+  margin: 5rem 2rem;
+  border: none;
+  background-color: #fff;
+  color: #444;
+  border-radius: 10rem;
+  cursor: pointer;
 }
 
-.rock {
-  background-color: #d5d5d4;
+.close-modal {
+  position: absolute;
+  top: 1.2rem;
+  left: 2rem;
+  font-size: 5rem;
+  color: #333;
+  cursor: pointer;
+  border: none;
+  background: none;
 }
 
-.fairy {
-  background-color: #fceaff;
+.modal {
+  position: fixed;
+  height: 70%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+
+  background-color: white;
+  padding: 6rem;
+  border-radius: 5px;
+  box-shadow: 0 3rem 5rem rgba(0, 0, 0, 0.3);
+  z-index: 10;
 }
 
-.poison {
-  background-color: #98d7a5;
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(3px);
+  z-index: 5;
+}
+.hidden {
+  display: none;
 }
 
-.bug {
-  background-color: #f8d5a3;
+.imgContainer {
+  margin: auto;
+}
+.imgContainer.l {
+  margin: inherit;
 }
 
-.dragon {
-  background-color: #97b3e6;
+.imgContainer.l {
+  width: 220px;
+  height: 220px;
 }
 
-.psychic {
-  background-color: #eaeda1;
+.img.l {
+  height: 180px;
 }
 
-.flying {
-  background-color: #f5f5f5;
+.pokemon.l {
+  background-color: #eee;
+  border-radius: 20px;
+  box-shadow: 0 3px 15px rgba(100, 100, 100, 0.5);
+  margin: 10px;
+  padding: 20px;
+  text-align: left;
+  margin-left: 10px;
 }
 
-.fighting {
-  background-color: #e6e0d4;
-}
-
-.normal {
-  background-color: #f5f5f5;
+.info.l {
+  margin-left: 10px;
 }

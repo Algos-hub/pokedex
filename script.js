@@ -75,9 +75,12 @@ function renderBlock(number) {
       <img id="img-${number}" src="" alt="" />
       </div>
       <div class="info">
-      <div class="id" id="id-${number}">${number}</div>
+      <div class="id" id="id-${number}">#${String(number).padStart(
+    4,
+    "0"
+  )}</div>
       <h3 class="name" id="name-${number}"></h3>
-      <span class="type" id="type-${number}">Type: <span id="type-name-${number}"></span></span>
+      <div class="type" id="type-${number}"><div id="type-name-${number}"></div></div>
       </div>
       </div>`;
 }
@@ -93,9 +96,9 @@ function renderBlocks(page) {
         <img id="img-${id}" src="" alt="" />
         </div>
         <div class="info">
-        <div class="id" id="id-${id}">${id}</div>
+        <div class="id" id="id-${id}">#${String(id).padStart(4, "0")}</div>
         <h3 class="name" id="name-${id}"></h3>
-        <span class="type" id="type-${id}">Type: <span id="type-name-${id}"></span></span>
+        <div class="type" id="type-${id}"><div class="types" id="type-name-${id}"></div></div>
         </div>
         </div>`;
     id++;
@@ -111,7 +114,14 @@ function renderPokemon(data) {
   // Injecting data
   document.getElementById(`pokemon-${id}`).classList.add(`${types}`);
   document.getElementById(`name-${id}`).textContent = `${correctName(name)}`;
-  document.getElementById(`type-name-${id}`).textContent = `${types}`;
+  for (let j = 0; j < data.types.length; j++) {
+    document.getElementById(`type-name-${id}`).innerHTML += `<div class="${
+      data.types[j].type.name
+    } box" id="type-name-${j}">${correctName(data.types[j].type.name).slice(
+      0,
+      -1
+    )}</div>`;
+  }
   document.getElementById(`img-${id}`).alt = `${correctName(name)}`;
   document.getElementById(
     `img-${id}`
@@ -153,8 +163,8 @@ function pagination(c, m) {
   var current = c,
     last = m,
     delta = 1,
-    left = current - delta - 2,
-    right = current + delta + 3,
+    left = current - delta - 1,
+    right = current + delta + 2,
     range = [],
     rangeWithDots = [],
     l;
@@ -220,6 +230,7 @@ function pageButtons() {
           }
           page = el;
           pageButtons();
+          // expandPokemon();
         });
     }
   });
@@ -232,6 +243,7 @@ searchInput.addEventListener("keydown", function (event) {
   if (event.key === "Enter") {
     event.preventDefault();
     const pokemon = searchInput.value.toLowerCase();
+    pokemonContainer.innerHTML = "";
     fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon}/`)
       .then((res) => {
         if (!res.ok) {
@@ -244,6 +256,11 @@ searchInput.addEventListener("keydown", function (event) {
         pokemonID = data.id;
         pokemonID === 1 ? disableFirst(true) : "";
         pokemonID === 1010 ? disableLast(true) : "";
+        // document
+        //   .getElementById(`pokemon-${data.id}`)
+        //   .addEventListener("click", function () {
+        //     openModal(data.id);
+        //   });
       });
     getPokemonData(pokemon);
     disableFirst(false);
@@ -256,6 +273,7 @@ searchInput.addEventListener("keydown", function (event) {
 
 // Clicking on the 'search' button validates the search
 searchBtn.addEventListener("click", function () {
+  pokemonContainer.innerHTML = "";
   const pokemon = searchInput.value.toLowerCase();
   fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon}/`)
     .then((res) => {
@@ -269,6 +287,11 @@ searchBtn.addEventListener("click", function () {
       pokemonID = data.id;
       pokemonID === 1 ? disableFirst(true) : "";
       pokemonID === 1010 ? disableLast(true) : "";
+      // document
+      //   .getElementById(`pokemon-${data.id}`)
+      //   .addEventListener("click", function () {
+      //     openModal(data.id);
+      //   });
     });
 
   getPokemonData(pokemon);
@@ -288,6 +311,7 @@ homeBtn.addEventListener("click", function () {
   loadNewPage(page);
   searchMade = false;
   pageButtons();
+  // expandPokemon();
 });
 
 // Skips to the first page/pokemon
@@ -305,6 +329,7 @@ skipFirstBtn.addEventListener("click", function () {
     disableFirst(true);
     loadNewPage(page);
     pageButtons();
+    // expandPokemon();
   }
 });
 
@@ -323,6 +348,7 @@ skipLastBtn.addEventListener("click", function () {
     disableFirst(false);
     loadNewPage(page);
     pageButtons();
+    // expandPokemon();
   }
 });
 
@@ -340,6 +366,7 @@ nextBtn.addEventListener("click", function () {
     page === 57 ? disableLast(true) : "";
     loadNewPage(page);
     pageButtons();
+    // expandPokemon();
   }
 });
 
@@ -357,6 +384,7 @@ backBtn.addEventListener("click", function () {
     renderBlocks(page);
     loadNewPage(page);
     pageButtons();
+    // expandPokemon();
   }
 });
 
@@ -365,3 +393,100 @@ renderBlocks(page);
 loadNewPage(1);
 disableFirst(true);
 pageButtons();
+
+// for (
+//   let i = pageLimit * (page - 1) + 1;
+//   i <= pageLimit * page && i <= 1010;
+//   i++
+// ) {
+//   document
+//     .getElementById(`pokemon-${i}`)
+//     .addEventListener("click", function () {});
+// }
+
+// const modal = document.querySelector(".modal");
+// const overlay = document.querySelector(".overlay");
+// const btnCloseModal = document.querySelector(".close-modal");
+
+// const openModal = (i) => {
+//   modal.classList.remove("hidden");
+//   overlay.classList.remove("hidden");
+//   document.querySelector(
+//     ".modal"
+//   ).innerHTML = `<button class="close-modal">&times;</button>
+//       <div class="pokemon l" id="pokemon-${i}-l">
+//       <div class="imgContainer l" id="imgContainer-${i}-l">
+//       <img class="img l" id="img-${i}-l" src="" alt="" />
+//       </div>
+//       <div class="info l">
+//       <div class="id l" id="id-${i}-l">#${String(i).padStart(4, "0")}</div>
+//       <h3 class="name l" id="name-${i}-l"></h3>
+//       <div class="height l" id="height-${i}">Height: <span id="height-${i}-l"></span>cm</div>
+//       <div class="weight l" id="weight-${i}">Weight: <span id="weight-${i}-l"></span>kg</div>
+//       <div class="type l" id="type-${i}-l"></div>
+//       </div>
+//       </div>`;
+//   fetch(`https://pokeapi.co/api/v2/pokemon/${i}/`)
+//     .then((res) => {
+//       if (!res.ok) {
+//         throw new Error(`${errorMsg} (${res.status})`);
+//       }
+//       return res.json();
+//     })
+//     .then((data) => {
+//       document
+//         .getElementById(`pokemon-${data.id}-l`)
+//         .classList.add(`${data.types[0].type.name}`);
+//       document.getElementById(`name-${data.id}-l`).textContent = `${correctName(
+//         data.name
+//       )}`;
+//       for (let j = 0; j < data.types.length; j++) {
+//         document.getElementById(
+//           `type-${data.id}-l`
+//         ).innerHTML += `<div class="${
+//           data.types[j].type.name
+//         } box" id="type-name-${j}">${correctName(
+//           data.types[j].type.name
+//         )}</div>`;
+//       }
+//       document.getElementById(`img-${data.id}-l`).alt = `${correctName(
+//         data.name
+//       )}`;
+//       document.getElementById(
+//         `img-${data.id}-l`
+//       ).src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${data.id}.png`;
+//       document.getElementById(`height-${data.id}-l`).textContent =
+//         data.height * 10;
+//       document.getElementById(`weight-${data.id}-l`).textContent =
+//         data.weight / 10;
+//       btnCloseModal.addEventListener("click", closeModal);
+//     });
+// };
+
+// const closeModal = () => {
+//   modal.classList.add("hidden");
+//   overlay.classList.add("hidden");
+// };
+// function expandPokemon() {
+//   for (
+//     let i = pageLimit * (page - 1) + 1;
+//     i <= pageLimit * page && i <= 1010;
+//     i++
+//   ) {
+//     document
+//       .getElementById(`pokemon-${i}`)
+//       .addEventListener("click", function () {
+//         openModal(i);
+//       });
+//   }
+// }
+
+// expandPokemon();
+// btnCloseModal.addEventListener("click", closeModal);
+// overlay.addEventListener("click", closeModal);
+
+// document.addEventListener("keydown", function (event) {
+//   if (event.key === "Escape" && !modal.classList.contains("hidden")) {
+//     closeModal();
+//   }
+// });
