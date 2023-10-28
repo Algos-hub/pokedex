@@ -24,6 +24,7 @@ const skipLastBtn = document.querySelector("#last-page");
 function pages(i) {
   return document.querySelector(`.page-${i}`);
 }
+
 // Functions
 
 // Toggle first and last page buttons
