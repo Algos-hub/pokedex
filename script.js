@@ -342,7 +342,7 @@ skipLastBtn.addEventListener("click", function () {
     disableLast(true);
     disableFirst(false);
   } else {
-    page = 57;
+    page = 85;
     renderBlocks(page);
     disableLast(true);
     disableFirst(false);
