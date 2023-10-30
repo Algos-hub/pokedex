@@ -546,6 +546,7 @@ function expandPokemon() {
       .getElementById(`pokemon-${i}`)
       .addEventListener("click", function () {
         openModal(i);
+        window.scrollTo({ top: 0, behavior: "smooth" });
       });
   }
 }
