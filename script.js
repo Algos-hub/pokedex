@@ -230,7 +230,7 @@ function pageButtons() {
           }
           page = el;
           pageButtons();
-          // expandPokemon();
+          expandPokemon();
         });
     }
   });
@@ -256,11 +256,11 @@ searchInput.addEventListener("keydown", function (event) {
         pokemonID = data.id;
         pokemonID === 1 ? disableFirst(true) : "";
         pokemonID === 1010 ? disableLast(true) : "";
-        // document
-        //   .getElementById(`pokemon-${data.id}`)
-        //   .addEventListener("click", function () {
-        //     openModal(data.id);
-        //   });
+        document
+          .getElementById(`pokemon-${data.id}`)
+          .addEventListener("click", function () {
+            openModal(data.id);
+          });
       });
     getPokemonData(pokemon);
     disableFirst(false);
@@ -287,11 +287,11 @@ searchBtn.addEventListener("click", function () {
       pokemonID = data.id;
       pokemonID === 1 ? disableFirst(true) : "";
       pokemonID === 1010 ? disableLast(true) : "";
-      // document
-      //   .getElementById(`pokemon-${data.id}`)
-      //   .addEventListener("click", function () {
-      //     openModal(data.id);
-      //   });
+      document
+        .getElementById(`pokemon-${data.id}`)
+        .addEventListener("click", function () {
+          openModal(data.id);
+        });
     });
 
   getPokemonData(pokemon);
@@ -311,7 +311,7 @@ homeBtn.addEventListener("click", function () {
   loadNewPage(page);
   searchMade = false;
   pageButtons();
-  // expandPokemon();
+  expandPokemon();
 });
 
 // Skips to the first page/pokemon
@@ -329,7 +329,7 @@ skipFirstBtn.addEventListener("click", function () {
     disableFirst(true);
     loadNewPage(page);
     pageButtons();
-    // expandPokemon();
+    expandPokemon();
   }
 });
 
@@ -348,7 +348,7 @@ skipLastBtn.addEventListener("click", function () {
     disableFirst(false);
     loadNewPage(page);
     pageButtons();
-    // expandPokemon();
+    expandPokemon();
   }
 });
 
@@ -363,10 +363,10 @@ nextBtn.addEventListener("click", function () {
   } else {
     page++;
     renderBlocks(page);
-    page === 57 ? disableLast(true) : "";
+    page === 85 ? disableLast(true) : "";
     loadNewPage(page);
     pageButtons();
-    // expandPokemon();
+    expandPokemon();
   }
 });
 
@@ -384,7 +384,7 @@ backBtn.addEventListener("click", function () {
     renderBlocks(page);
     loadNewPage(page);
     pageButtons();
-    // expandPokemon();
+    expandPokemon();
   }
 });
 
@@ -393,7 +393,7 @@ renderBlocks(page);
 loadNewPage(1);
 disableFirst(true);
 pageButtons();
-/*
+
 for (
   let i = pageLimit * (page - 1) + 1;
   i <= pageLimit * page && i <= 1010;
@@ -410,22 +410,68 @@ const btnCloseModal = document.querySelector(".close-modal");
 
 const openModal = (i) => {
   modal.classList.remove("hidden");
+  modal.classList.add("pokemon");
+  modal.classList.add(`pokemon-${i}-l`);
   overlay.classList.remove("hidden");
   document.querySelector(
     ".modal"
   ).innerHTML = `<button class="close-modal">&times;</button>
-      <div class="pokemon l" id="pokemon-${i}-l">
+  <div class="title">
+  <h3 class="name l" id="name-${i}-l"></h3><div><pre> </pre></div>
+    <div class="id l" id="id-${i}-l">#${String(i).padStart(4, "0")}</div>
+    </div>
       <div class="imgContainer l" id="imgContainer-${i}-l">
       <img class="img l" id="img-${i}-l" src="" alt="" />
-      </div>
-      <div class="info l">
-      <div class="id l" id="id-${i}-l">#${String(i).padStart(4, "0")}</div>
-      <h3 class="name l" id="name-${i}-l"></h3>
-      <div class="height l" id="height-${i}">Height: <span id="height-${i}-l"></span>cm</div>
-      <div class="weight l" id="weight-${i}">Weight: <span id="weight-${i}-l"></span>kg</div>
       <div class="type l" id="type-${i}-l"></div>
       </div>
+      <div class="info l">
+      <div class="column-1">
+      <ul>
+      <li>
+      <span class="attribute height l" id="height-${i}">Height: </br></span> 
+      <span class="value"><span id="height-${i}-l"></span>cm</span>
+      </li>
+      <li>
+      <span class="attribute weight l" id="weight-${i}">Weight: </br></span>
+      <span class="value"><span id="weight-${i}-l"></span>kg</span>
+      </li>
+      <li>
+      <span class="attribute abilities l" id="abilities-${i}">Abilities: </br></span>
+      <span class="value"><span id="abilities-${i}-l-0"></span></br></span>
+      <span class="value"><span id="abilities-${i}-l-1"></span></span>
+      </li>
+      </ul>
+      </div>
+      <div class="column-2">
+      <ul>
+      <li>
+      <span class="attribute hp l" id="hp-${i}">HP: </br></span>
+      <span class="value"><span id="hp-${i}-l"></span></span>
+      </li>
+      <li>
+      <span class="attribute attack l" id="attack-${i}">Attack: </br></span>
+      <span class="value"><span id="attack-${i}-l"></span></span>
+      </li>
+      <li>
+      <span class="attribute defense l" id="defense-${i}">Defense: </br></span>
+      <span class="value"><span id="defense-${i}-l"></span></span>
+      </li>
+      <li>
+      <span class="attribute special-attack l" id="special-attack-${i}">Special-attack: </br></span>
+      <span class="value"><span id="special-attack-${i}-l"></span></span>
+      </li>
+      <li>
+      <span class="attribute special-defense l" id="special-defense-${i}">Special-defense: </br></span>
+      <span class="value"><span id="special-defense-${i}-l"></span></span>
+      </li>
+      <li>
+      <span class="attribute speed l" id="speed-${i}">Speed: </br></span>
+      <span class="value"><span id="speed-${i}-l"></span></span>
+      </li>
+      </ul>
+      </div>
       </div>`;
+
   fetch(`https://pokeapi.co/api/v2/pokemon/${i}/`)
     .then((res) => {
       if (!res.ok) {
@@ -434,9 +480,6 @@ const openModal = (i) => {
       return res.json();
     })
     .then((data) => {
-      document
-        .getElementById(`pokemon-${data.id}-l`)
-        .classList.add(`${data.types[0].type.name}`);
       document.getElementById(`name-${data.id}-l`).textContent = `${correctName(
         data.name
       )}`;
@@ -445,7 +488,7 @@ const openModal = (i) => {
           `type-${data.id}-l`
         ).innerHTML += `<div class="${
           data.types[j].type.name
-        } box" id="type-name-${j}">${correctName(
+        } box l" id="type-name-${j}">${correctName(
           data.types[j].type.name
         )}</div>`;
       }
@@ -459,13 +502,39 @@ const openModal = (i) => {
         data.height * 10;
       document.getElementById(`weight-${data.id}-l`).textContent =
         data.weight / 10;
-      btnCloseModal.addEventListener("click", closeModal);
+      for (let j = 0; j < data.abilities.length; j++) {
+        if (data.abilities[j].is_hidden !== true) {
+          document.getElementById(`abilities-${data.id}-l-${j}`).textContent +=
+            correctName(data.abilities[j].ability.name);
+        }
+        document.getElementById(`hp-${data.id}-l`).textContent =
+          data.stats[0].base_stat;
+        document.getElementById(`attack-${data.id}-l`).textContent =
+          data.stats[1].base_stat;
+        document.getElementById(`defense-${data.id}-l`).textContent =
+          data.stats[2].base_stat;
+        document.getElementById(`special-attack-${data.id}-l`).textContent =
+          data.stats[3].base_stat;
+        document.getElementById(`special-defense-${data.id}-l`).textContent =
+          data.stats[4].base_stat;
+        document.getElementById(`speed-${data.id}-l`).textContent =
+          data.stats[5].base_stat;
+        const btnCloseModal = document.querySelector(".close-modal");
+        btnCloseModal.addEventListener("click", closeModal);
+      }
     });
 };
 
 const closeModal = () => {
   modal.classList.add("hidden");
   overlay.classList.add("hidden");
+  for (
+    let i = pageLimit * (page - 1) + 1;
+    i <= pageLimit * page && i <= 1010;
+    i++
+  ) {
+    modal.classList.remove(`pokemon-${i}-l`);
+  }
 };
 function expandPokemon() {
   for (
@@ -482,7 +551,7 @@ function expandPokemon() {
 }
 
 expandPokemon();
-document.querySelector(".close-modal").addEventListener("click", closeModal());
+
 overlay.addEventListener("click", closeModal);
 
 document.addEventListener("keydown", function (event) {
@@ -490,4 +559,3 @@ document.addEventListener("keydown", function (event) {
     closeModal();
   }
 });
-*/
