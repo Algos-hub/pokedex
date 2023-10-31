@@ -591,7 +591,7 @@ const openModal = (i) => {
                     ).src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${data1.id}.png`;
                   });
 
-                if (dataChain.chain.evolves_to.length !== 1) {
+                if (dataChain.chain.evolves_to.length > 1) {
                   document.querySelector(".evolutions.l").classList.add("e");
                   document.querySelector(
                     ".evo.box"
@@ -665,8 +665,8 @@ const openModal = (i) => {
                             `img-${h + 1}-l-evo`
                           ).src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${data2.id}.png`;
                           if (
-                            dataChain.chain.evolves_to[h].evolves_to.length !==
-                            0
+                            dataChain.chain.evolves_to[h].evolves_to.length ===
+                            1
                           ) {
                             if (!document.querySelector(".evo.box.f")) {
                               document.querySelector(
@@ -784,7 +784,7 @@ const openModal = (i) => {
                         `img-1-l-evo`
                       ).src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${data4.id}.png`;
                     });
-                  if (dataChain.chain.evolves_to[0].evolves_to.length !== 1) {
+                  if (dataChain.chain.evolves_to[0].evolves_to.length !== 0) {
                     document.querySelector(".evolutions.l").classList.add("e");
                     document.querySelector(
                       ".evo.box"
