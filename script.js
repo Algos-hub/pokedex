@@ -626,9 +626,10 @@ const openModal = (i) => {
                     )}</div>
                     </div>
                     `;
-                    fetch(
-                      `https://pokeapi.co/api/v2/pokemon/${dataChain.chain.evolves_to[h].species.name}/`
-                    )
+                    let speciesID = dataChain.chain.evolves_to[h].species.url
+                      .replace("https://pokeapi.co/api/v2/pokemon-species/", "")
+                      .replace("/", "");
+                    fetch(`https://pokeapi.co/api/v2/pokemon/${speciesID}/`)
                       .then((res) => {
                         if (!res.ok) {
                           throw new Error(`${errorMsg} (${res.status})`);

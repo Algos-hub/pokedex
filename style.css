@@ -670,6 +670,9 @@ svg {
     flex-direction: column;
     border-top: 30px;
     margin-bottom: 20px;
+    width: 75vw;
+    display: flex;
+    align-content: center;
   }
 
   .imgContainer.l.evo {
@@ -698,8 +701,13 @@ svg {
   .evo.box.f > .imgContainer.l.evo {
     width: 20vw;
     height: 20vw;
-    margin-inline: calc(30px - 3vw);
+    margin-inline: calc(30px - 1vw);
     margin-top: 25px;
+  }
+
+  .type.l.evo {
+    max-width: 115px;
+    width: max-content;
   }
 }
 
