@@ -104,6 +104,24 @@ function renderBlocks(page) {
     id++;
   }
 }
+function getImg(place, id, name, size = "", evo = "") {
+  document.getElementById(`img-${place}${size}${evo}`).alt = `${correctName(
+    name
+  )}`;
+  document.getElementById(`img-${place}${size}${evo}`).src = pokemonImg(id);
+}
+
+function types(data, order, size = "", evo = "") {
+  for (let j = 0; j < data.types.length; j++) {
+    document.getElementById(
+      `type-${order}${size}${evo}`
+    ).innerHTML += `<div class="${
+      data.types[j].type.name
+    } box l" id="type-name-${j}-evo">${correctName(
+      data.types[j].type.name
+    )}</div>`;
+  }
+}
 
 // Injecting API data into empty blocks
 function renderPokemon(data) {
@@ -114,6 +132,7 @@ function renderPokemon(data) {
   // Injecting data
   document.getElementById(`pokemon-${id}`).classList.add(`${types}`);
   document.getElementById(`name-${id}`).textContent = `${correctName(name)}`;
+  // types(data, id);
   for (let j = 0; j < data.types.length; j++) {
     document.getElementById(`type-name-${id}`).innerHTML += `<div class="${
       data.types[j].type.name
@@ -122,10 +141,7 @@ function renderPokemon(data) {
       -1
     )}</div>`;
   }
-  document.getElementById(`img-${id}`).alt = `${correctName(name)}`;
-  document.getElementById(
-    `img-${id}`
-  ).src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
+  getImg(id, id, name);
 }
 
 // Injects an entire page of empty blocks with the relevant data
@@ -411,15 +427,10 @@ for (
 const modal = document.querySelector(".modal");
 const overlay = document.querySelector(".overlay");
 const btnCloseModal = document.querySelector(".close-modal");
+const arrowSVG = `<svg xmlns="http://www.w3.org/2000/svg" height="10vw" viewBox="0 0 320 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><style>svg{fill:#8a8a8a}</style><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg>`;
 
-const openModal = (i) => {
-  modal.classList.remove("hidden");
-  modal.classList.add("pokemon");
-  modal.classList.add(`pokemon-${i}-l`);
-  overlay.classList.remove("hidden");
-  document.querySelector(
-    ".modal"
-  ).innerHTML = `<button class="close-modal">&times;</button>
+function modalBlock(i) {
+  modal.innerHTML = `<button class="close-modal">&times;</button>
   <div class="title">
   <h3 class="name l" id="name-${i}-l"></h3><div><pre> </pre></div>
     <div class="id l" id="id-${i}-l">#${String(i).padStart(4, "0")}</div>
@@ -482,437 +493,213 @@ const openModal = (i) => {
       </div>
       </div>
       `;
+}
+function evoStage(i, data, column = "") {
+  return (document.querySelector(
+    `.evolution-${i}${column}`
+  ).innerHTML += ` #${String(data.id).padStart(4, "0")}`);
+}
 
-  fetch(`https://pokeapi.co/api/v2/pokemon/${i}/`)
-    .then((res) => {
-      if (!res.ok) {
-        throw new Error(`${errorMsg} (${res.status})`);
+function pokemonImg(id) {
+  return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
+}
+
+function getIDFromUrl(url) {
+  return url
+    .replace("https://pokeapi.co/api/v2/pokemon-species/", "")
+    .replace("/", "");
+}
+
+const openModal = (i) => {
+  modal.classList.remove("hidden");
+  modal.classList.add("pokemon");
+  modal.classList.add(`pokemon-${i}-l`);
+  overlay.classList.remove("hidden");
+  modalBlock(i);
+  const evoBox = document.querySelector(".evo.box");
+  function evoBoxHTML(i, evoNum, name, svg = "", column = "") {
+    if (column !== "") {
+      return (document.querySelector(
+        `.evo.box.${column}`
+      ).innerHTML += `${svg}<div class="imgContainer l evo" id="imgContainer-${i}-l">
+      <img class="img l evo" id="img-${i}-l-evo" src="" alt="" />
+      <div class="type l evo" id="type-${i}-l-evo"></div>
+      <div class="evolution-${evoNum}-${column}">${correctName(name)}</div>
+        </div>
+        `);
+    } else {
+      return (evoBox.innerHTML += `${svg}<div class="imgContainer l evo" id="imgContainer-${i}-l">
+      <img class="img l evo" id="img-${i}-l-evo" src="" alt="" />
+      <div class="type l evo" id="type-${i}-l-evo"></div>
+      <div class="evolution-${evoNum}">${correctName(name)}</div>
+        </div>
+        `);
+    }
+  }
+
+  function evoDiv(column, svg = "") {
+    return (evoBox.innerHTML += `${svg}<div class="evo box ${column}"></div`);
+  }
+
+  getJSON(`https://pokeapi.co/api/v2/pokemon/${i}/`).then((data) => {
+    document.getElementById(`name-${data.id}-l`).textContent = `${correctName(
+      data.name
+    )}`;
+    types(data, data.id, "-l");
+    getImg(data.id, data.id, data.name, "-l");
+    document.getElementById(`height-${data.id}-l`).textContent =
+      data.height * 10;
+    document.getElementById(`weight-${data.id}-l`).textContent =
+      data.weight / 10;
+    for (let j = 0; j < data.abilities.length; j++) {
+      if (data.abilities[j].is_hidden !== true) {
+        document.getElementById(`abilities-${data.id}-l-${j}`).textContent +=
+          correctName(data.abilities[j].ability.name);
       }
-      return res.json();
-    })
-    .then((data) => {
-      document.getElementById(`name-${data.id}-l`).textContent = `${correctName(
-        data.name
-      )}`;
-      for (let j = 0; j < data.types.length; j++) {
-        document.getElementById(
-          `type-${data.id}-l`
-        ).innerHTML += `<div class="${
-          data.types[j].type.name
-        } box l" id="type-name-${j}">${correctName(
-          data.types[j].type.name
-        )}</div>`;
-      }
-      document.getElementById(`img-${data.id}-l`).alt = `${correctName(
-        data.name
-      )}`;
-      document.getElementById(
-        `img-${data.id}-l`
-      ).src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${data.id}.png`;
-      document.getElementById(`height-${data.id}-l`).textContent =
-        data.height * 10;
-      document.getElementById(`weight-${data.id}-l`).textContent =
-        data.weight / 10;
-      for (let j = 0; j < data.abilities.length; j++) {
-        if (data.abilities[j].is_hidden !== true) {
-          document.getElementById(`abilities-${data.id}-l-${j}`).textContent +=
-            correctName(data.abilities[j].ability.name);
-        }
-        document.getElementById(`hp-${data.id}-l`).textContent =
-          data.stats[0].base_stat;
-        document.getElementById(`attack-${data.id}-l`).textContent =
-          data.stats[1].base_stat;
-        document.getElementById(`defense-${data.id}-l`).textContent =
-          data.stats[2].base_stat;
-        document.getElementById(`special-attack-${data.id}-l`).textContent =
-          data.stats[3].base_stat;
-        document.getElementById(`special-defense-${data.id}-l`).textContent =
-          data.stats[4].base_stat;
-        document.getElementById(`speed-${data.id}-l`).textContent =
-          data.stats[5].base_stat;
-        const btnCloseModal = document.querySelector(".close-modal");
-        btnCloseModal.addEventListener("click", closeModal);
-      }
-      fetch(`https://pokeapi.co/api/v2/pokemon-species/${data.id}/`)
-        .then((res) => {
-          if (!res.ok) {
-            throw new Error(`${errorMsg} (${res.status})`);
-          }
-          return res.json();
-        })
-        .then((dataSpecies) => {
-          fetch(dataSpecies.evolution_chain.url)
-            .then((res) => {
-              if (!res.ok) {
-                throw new Error(`${errorMsg} (${res.status})`);
+      document.getElementById(`hp-${data.id}-l`).textContent =
+        data.stats[0].base_stat;
+      document.getElementById(`attack-${data.id}-l`).textContent =
+        data.stats[1].base_stat;
+      document.getElementById(`defense-${data.id}-l`).textContent =
+        data.stats[2].base_stat;
+      document.getElementById(`special-attack-${data.id}-l`).textContent =
+        data.stats[3].base_stat;
+      document.getElementById(`special-defense-${data.id}-l`).textContent =
+        data.stats[4].base_stat;
+      document.getElementById(`speed-${data.id}-l`).textContent =
+        data.stats[5].base_stat;
+      const btnCloseModal = document.querySelector(".close-modal");
+      btnCloseModal.addEventListener("click", closeModal);
+    }
+    getJSON(`https://pokeapi.co/api/v2/pokemon-species/${data.id}/`).then(
+      (dataSpecies) => {
+        getJSON(dataSpecies.evolution_chain.url).then((dataChain) => {
+          {
+            const chain1 = dataChain.chain;
+
+            evoBoxHTML(0, 1, chain1.species.name);
+            let speciesID = getIDFromUrl(chain1.species.url);
+            getJSON(`https://pokeapi.co/api/v2/pokemon/${speciesID}/`).then(
+              (data1) => {
+                evoStage(1, data1);
+                types(data1, "0", "-l", "-evo");
+                getImg(0, data1.id, chain1.species.name, "-l", "-evo");
               }
-              return res.json();
-            })
-            .then((dataChain) => {
-              {
-                document.querySelector(
-                  ".evo.box"
-                ).innerHTML += `<div class="imgContainer l evo" id="imgContainer-0-l">
-                                <img class="img l evo" id="img-0-l-evo" src="" alt="" />
-                                <div class="type l evo" id="type-0-l-evo"></div>
-                                <div class="evolution-1">${correctName(
-                                  dataChain.chain.species.name
-                                )}</div>
-                                </div>
-                                `;
-                let speciesID = dataChain.chain.species.url
-                  .replace("https://pokeapi.co/api/v2/pokemon-species/", "")
-                  .replace("/", "");
-                fetch(`https://pokeapi.co/api/v2/pokemon/${speciesID}/`)
-                  .then((res) => {
-                    if (!res.ok) {
-                      throw new Error(`${errorMsg} (${res.status})`);
-                    }
-                    return res.json();
-                  })
-                  .then((data1) => {
-                    document.querySelector(
-                      ".evolution-1"
-                    ).innerHTML += ` #${String(data1.id).padStart(4, "0")}`;
-                    for (let j = 0; j < data1.types.length; j++) {
-                      document.getElementById(
-                        `type-0-l-evo`
-                      ).innerHTML += `<div class="${
-                        data1.types[j].type.name
-                      } box l" id="type-name-${j}-evo">${correctName(
-                        data1.types[j].type.name
-                      )}</div>`;
-                    }
-                    document.getElementById(`img-0-l-evo`).alt = `${correctName(
-                      dataChain.chain.species.name
-                    )}`;
-                    document.getElementById(
-                      `img-0-l-evo`
-                    ).src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${data1.id}.png`;
-                  });
+            );
 
-                if (dataChain.chain.evolves_to.length > 1) {
-                  document.querySelector(".evolutions.l").classList.add("e");
-                  document.querySelector(
-                    ".evo.box"
-                  ).innerHTML += `<svg xmlns="http://www.w3.org/2000/svg" height="10vw" viewBox="0 0 320 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><style>svg{fill:#8a8a8a}</style><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg><div class="evo box e"></div`;
-                  for (let h = 0; h < dataChain.chain.evolves_to.length; h++) {
-                    let column;
-                    if (h <= 3) {
-                      column = "e";
+            if (chain1.evolves_to.length > 1) {
+              document.querySelector(".evolutions.l").classList.add("e");
+              evoDiv("e", arrowSVG);
+              for (let h = 0; h < chain1.evolves_to.length; h++) {
+                const a = h + 1;
+                const c = h + 3;
+                const evoBoxF = document.querySelector(".evo.box.f");
+                let chain2;
+                chain1.evolves_to.length > 1
+                  ? (chain2 = chain1.evolves_to[h])
+                  : "";
+
+                let column;
+                h <= 3 ? (column = "e") : (column = "f");
+                if (!evoBoxF) {
+                  chain1.evolves_to.length === 2
+                    ? evoDiv("f", arrowSVG)
+                    : evoDiv("f");
+                }
+                evoBoxHTML(a, a, chain2.species.name, "", column);
+                let speciesID = getIDFromUrl(chain2.species.url);
+                getJSON(`https://pokeapi.co/api/v2/pokemon/${speciesID}/`).then(
+                  (data2) => {
+                    if (data2.id > 1010) {
+                      document.getElementById(`imgContainer-${a}-l`).remove();
                     } else {
-                      column = "f";
-                      if (!document.querySelector(".evo.box.f")) {
-                        document.querySelector(
-                          ".evo.box"
-                        ).innerHTML += `<div class="evo box f"></div>`;
-                      }
-                    }
-                    document.querySelector(
-                      `.evo.box.${column}`
-                    ).innerHTML += `<div class="imgContainer l evo" id="imgContainer-${
-                      h + 1
-                    }-l">
-                                    <img class="img l evo" id="img-${
-                                      h + 1
-                                    }-l-evo" src="" alt="" />
-                                    <div class="type l evo" id="type-${
-                                      h + 1
-                                    }-l-evo"></div>
-                                    <div class="evolution-${
-                                      h + 1
-                                    }-e">${correctName(
-                      dataChain.chain.evolves_to[h].species.name
-                    )}</div>
-                    </div>
-                    `;
-                    let speciesID = dataChain.chain.evolves_to[h].species.url
-                      .replace("https://pokeapi.co/api/v2/pokemon-species/", "")
-                      .replace("/", "");
-                    fetch(`https://pokeapi.co/api/v2/pokemon/${speciesID}/`)
-                      .then((res) => {
-                        if (!res.ok) {
-                          throw new Error(`${errorMsg} (${res.status})`);
-                        }
-                        return res.json();
-                      })
-                      .then((data2) => {
-                        if (data2.id > 1010) {
-                          document
-                            .getElementById(`imgContainer-${h + 1}-l`)
-                            .remove();
-                        } else {
-                          document.querySelector(
-                            `.evolution-${h + 1}-e`
-                          ).innerHTML += ` #${String(data2.id).padStart(
-                            4,
-                            "0"
-                          )}`;
-                          for (let j = 0; j < data2.types.length; j++) {
-                            document.getElementById(
-                              `type-${h + 1}-l-evo`
-                            ).innerHTML += `<div class="${
-                              data2.types[j].type.name
-                            } box l" id="type-name-${j}-evo">${correctName(
-                              data2.types[j].type.name
-                            )}</div>`;
-                          }
-                          document.getElementById(
-                            `img-${h + 1}-l-evo`
-                          ).alt = `${correctName(
-                            dataChain.chain.evolves_to[h].species.name
-                          )}`;
-                          document.getElementById(
-                            `img-${h + 1}-l-evo`
-                          ).src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${data2.id}.png`;
-                          if (
-                            dataChain.chain.evolves_to[h].evolves_to.length ===
-                            1
-                          ) {
-                            if (!document.querySelector(".evo.box.f")) {
-                              document.querySelector(
-                                ".evo.box"
-                              ).innerHTML += `<svg xmlns="http://www.w3.org/2000/svg" height="10vw" viewBox="0 0 320 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><style>svg{fill:#8a8a8a}</style><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg><div class="evo box f"></div`;
-                            }
-                            document.querySelector(".evo.box.f").innerHTML += `
-                            <div class="imgContainer l evo" id="imgContainer-${
-                              h + 3
-                            }-l">
-                                    <img class="img l evo" id="img-${
-                                      h + 3
-                                    }-l-evo" src="" alt="" />
-                                    <div class="type l evo" id="type-${
-                                      h + 3
-                                    }-l-evo"></div>
-                                    <div class="evolution-${
-                                      h + 3
-                                    }-e">${correctName(
-                              dataChain.chain.evolves_to[h].evolves_to[0]
-                                .species.name
-                            )}</div>
-                    </div>
-                    `;
-                            fetch(
-                              `https://pokeapi.co/api/v2/pokemon/${dataChain.chain.evolves_to[h].evolves_to[0].species.name}/`
-                            )
-                              .then((res) => {
-                                if (!res.ok) {
-                                  throw new Error(
-                                    `${errorMsg} (${res.status})`
-                                  );
-                                }
-                                return res.json();
-                              })
-                              .then((data3) => {
-                                if (data3.id > 1010) {
-                                  document
-                                    .getElementById(`imgContainer-${h + 3}-l`)
-                                    .remove();
-                                } else {
-                                  document.querySelector(
-                                    `.evolution-${h + 3}-e`
-                                  ).innerHTML += ` #${String(data3.id).padStart(
-                                    4,
-                                    "0"
-                                  )}`;
-                                  for (let j = 0; j < data3.types.length; j++) {
-                                    document.getElementById(
-                                      `type-${h + 3}-l-evo`
-                                    ).innerHTML += `<div class="${
-                                      data3.types[j].type.name
-                                    } box l" id="type-name-${j}-evo">${correctName(
-                                      data3.types[j].type.name
-                                    )}</div>`;
-                                  }
-                                  document.getElementById(
-                                    `img-${h + 3}-l-evo`
-                                  ).alt = `${correctName(
-                                    dataChain.chain.evolves_to[h].evolves_to[0]
-                                      .species.name
-                                  )}`;
-                                  document.getElementById(
-                                    `img-${h + 3}-l-evo`
-                                  ).src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${data3.id}.png`;
-                                }
-                              });
-                          }
-                        }
-                      });
-                  }
-                } else {
-                  dataChain.chain.evolves_to[0].species.name !== undefined
-                    ? (document.querySelector(
-                        ".evo.box"
-                      ).innerHTML += `<svg xmlns="http://www.w3.org/2000/svg" height="10vw" viewBox="0 0 320 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><style>svg{fill:#8a8a8a}</style><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg><div class="imgContainer l evo" id="imgContainer-1-l">
-                                      <img class="img l evo" id="img-1-l-evo" src="" alt="" />
-                                      <div class="type l evo" id="type-1-l-evo"></div>
-                                      <div class="evolution-2">${correctName(
-                                        dataChain.chain.evolves_to[0].species
-                                          .name
-                                      )}</div>
-                                      </div>
-                                      `)
-                    : "";
-                  let speciesID = dataChain.chain.evolves_to[0].species.url
-                    .replace("https://pokeapi.co/api/v2/pokemon-species/", "")
-                    .replace("/", "");
-                  fetch(`https://pokeapi.co/api/v2/pokemon/${speciesID}/`)
-                    .then((res) => {
-                      if (!res.ok) {
-                        throw new Error(`${errorMsg} (${res.status})`);
-                      }
-                      return res.json();
-                    })
-                    .then((data4) => {
-                      document.querySelector(
-                        ".evolution-2"
-                      ).innerHTML += ` #${String(data4.id).padStart(4, "0")}`;
-                      for (let j = 0; j < data4.types.length; j++) {
-                        document.getElementById(
-                          `type-1-l-evo`
-                        ).innerHTML += `<div class="${
-                          data4.types[j].type.name
-                        } box l" id="type-name-${j}-evo">${correctName(
-                          data4.types[j].type.name
-                        )}</div>`;
-                      }
-                      document.getElementById(
-                        "img-1-l-evo"
-                      ).alt = `${correctName(
-                        dataChain.chain.evolves_to[0].species.name
-                      )}`;
-                      document.getElementById(
-                        `img-1-l-evo`
-                      ).src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${data4.id}.png`;
-                    });
-                  if (dataChain.chain.evolves_to[0].evolves_to.length !== 0) {
-                    document.querySelector(".evolutions.l").classList.add("e");
-                    document.querySelector(
-                      ".evo.box"
-                    ).innerHTML += `<svg xmlns="http://www.w3.org/2000/svg" height="10vw" viewBox="0 0 320 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><style>svg{fill:#8a8a8a}</style><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg><div class="evo box f"></div`;
-                    for (
-                      let h = 0;
-                      h < dataChain.chain.evolves_to[0].evolves_to.length;
-                      h++
-                    ) {
-                      document.querySelector(
-                        ".evo.box.f"
-                      ).innerHTML += `<div class="imgContainer l evo" id="imgContainer-${
-                        h + 2
-                      }-l">
-                                    <img class="img l evo" id="img-${
-                                      h + 2
-                                    }-l-evo" src="" alt="" />
-                                    <div class="type l evo" id="type-${
-                                      h + 2
-                                    }-l-evo"></div>
-                                    <div class="evolution-${
-                                      h + 2
-                                    }-e">${correctName(
-                        dataChain.chain.evolves_to[0].evolves_to[h].species.name
-                      )}</div>
-                    </div>
-                    `;
-                      fetch(
-                        `https://pokeapi.co/api/v2/pokemon/${dataChain.chain.evolves_to[0].evolves_to[h].species.name}/`
-                      )
-                        .then((res) => {
-                          if (!res.ok) {
-                            throw new Error(`${errorMsg} (${res.status})`);
-                          }
-                          return res.json();
-                        })
-                        .then((data5) => {
-                          if (data5.id > 1010) {
+                      evoStage(a, data2, `-${column}`);
+                      types(data2, a, "-l", "-evo");
+                      getImg(a, data2.id, chain2.species.name, "-l", "-evo");
+                      if (chain2.evolves_to.length === 1) {
+                        let chain3 = chain2.evolves_to[0];
+                        evoBoxHTML(c, c, chain3.species.name, "", "f");
+                        getJSON(
+                          `https://pokeapi.co/api/v2/pokemon/${chain3.species.name}/`
+                        ).then((data3) => {
+                          if (data3.id > 1010) {
                             document
-                              .getElementById(`imgContainer-${h + 2}-l`)
+                              .getElementById(`imgContainer-${c}-l`)
                               .remove();
                           } else {
-                            document.querySelector(
-                              `.evolution-${h + 2}-e`
-                            ).innerHTML += ` #${String(data5.id).padStart(
-                              4,
-                              "0"
-                            )}`;
-                            for (let j = 0; j < data5.types.length; j++) {
-                              document.getElementById(
-                                `type-${h + 2}-l-evo`
-                              ).innerHTML += `<div class="${
-                                data5.types[j].type.name
-                              } box l" id="type-name-${j}-evo">${correctName(
-                                data5.types[j].type.name
-                              )}</div>`;
-                            }
-                            document.getElementById(
-                              `img-${h + 2}-l-evo`
-                            ).alt = `${correctName(
-                              dataChain.chain.evolves_to[0].evolves_to[h]
-                                .species.name
-                            )}`;
-                            document.getElementById(
-                              `img-${h + 2}-l-evo`
-                            ).src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${data5.id}.png`;
+                            evoStage(c, data3, "-f");
+                            types(data3, c, "-l", "-evo");
+                            getImg(
+                              c,
+                              data3.id,
+                              chain3.species.name,
+                              "-l",
+                              "-evo"
+                            );
                           }
                         });
+                      }
                     }
-                  } else {
-                    dataChain.chain.evolves_to[0].evolves_to[0]?.species
-                      .name !== undefined
-                      ? (document.querySelector(
-                          ".evo.box"
-                        ).innerHTML += `<svg xmlns="http://www.w3.org/2000/svg" height="10vw" viewBox="0 0 320 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><style>svg{fill:#8a8a8a}</style><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg><div class="imgContainer l evo" id="imgContainer-2-l">
-                                      <img class="img l evo" id="img-2-l-evo" src="" alt="" />
-                                      <div class="type l evo" id="type-2-l-evo"></div>
-                                      <div class="evolution-3">${correctName(
-                                        dataChain.chain.evolves_to[0]
-                                          .evolves_to[0].species.name
-                                      )}</div>
-                                      </div>
-                                      `)
-                      : "";
-                    let speciesID1 =
-                      dataChain.chain.evolves_to[0].evolves_to[0].species.url
-                        .replace(
-                          "https://pokeapi.co/api/v2/pokemon-species/",
-                          ""
-                        )
-                        .replace("/", "");
-                    fetch(`https://pokeapi.co/api/v2/pokemon/${speciesID1}/`)
-                      .then((res) => {
-                        if (!res.ok) {
-                          throw new Error(`${errorMsg} (${res.status})`);
-                        }
-                        return res.json();
-                      })
-                      .then((data6) => {
-                        document.querySelector(
-                          ".evolution-3"
-                        ).innerHTML += ` #${String(data6.id).padStart(4, "0")}`;
-                        for (let j = 0; j < data6.types.length; j++) {
-                          document.getElementById(
-                            `type-2-l-evo`
-                          ).innerHTML += `<div class="${
-                            data6.types[j].type.name
-                          } box l" id="type-name-${j}-evo">${correctName(
-                            data6.types[j].type.name
-                          )}</div>`;
-                        }
-                        document.getElementById(
-                          `img-2-l-evo`
-                        ).alt = `${correctName(
-                          dataChain.chain.evolves_to[0].evolves_to[0].species
-                            .name
-                        )}`;
-                        document.getElementById(
-                          `img-2-l-evo`
-                        ).src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${data6.id}.png`;
-                      });
                   }
+                );
+              }
+            } else {
+              let chain2 = dataChain.chain.evolves_to[0];
+              chain2.species.name !== undefined
+                ? evoBoxHTML(1, 2, chain2.species.name, arrowSVG)
+                : "";
+              let speciesID = getIDFromUrl(chain2.species.url);
+              getJSON(`https://pokeapi.co/api/v2/pokemon/${speciesID}/`).then(
+                (data4) => {
+                  evoStage(2, data4);
+                  types(data4, 1, "-l", "-evo");
+                  getImg(1, data4.id, chain2.species.name, "-l", "-evo");
+                }
+              );
+              if (chain2.evolves_to.length !== 0) {
+                if (
+                  chain1.evolves_to.length > 1 ||
+                  chain2.evolves_to.length > 1
+                ) {
+                  document.querySelector(".evolutions.l").classList.add("e");
+                  evoDiv("f", arrowSVG);
+                  for (let h = 0; h < chain2.evolves_to.length; h++) {
+                    let chain3 = chain2.evolves_to[h];
+                    const b = h + 2;
+                    evoBoxHTML(b, b, chain3.species.name, "", "f");
+                    getJSON(
+                      `https://pokeapi.co/api/v2/pokemon/${chain3.species.name}/`
+                    ).then((data5) => {
+                      if (data5.id > 1010) {
+                        document.getElementById(`imgContainer-${b}-l`).remove();
+                      } else {
+                        evoStage(b, data5, "-f");
+                        types(data5, b, "-l", "-evo");
+                        getImg(b, data5.id, chain3.species.name, "-l", "-evo");
+                      }
+                    });
+                  }
+                } else {
+                  let chain3 = chain2.evolves_to[0];
+                  chain3?.species.name !== undefined
+                    ? evoBoxHTML(2, 3, chain3.species.name, arrowSVG)
+                    : "";
+                  let speciesID1 = getIDFromUrl(chain3.species.url);
+                  getJSON(
+                    `https://pokeapi.co/api/v2/pokemon/${speciesID1}/`
+                  ).then((data6) => {
+                    evoStage(3, data6);
+                    types(data6, 2, "-l", "-evo");
+                    getImg(2, data6.id, chain3.species.name, "-l", "-evo");
+                  });
                 }
               }
-            });
+            }
+          }
         });
-    });
+      }
+    );
+  });
 };
 
 const closeModal = () => {
