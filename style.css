@@ -717,6 +717,11 @@ svg {
     max-width: 115px;
     width: max-content;
   }
+
+  .modal.pokemon.pokemon-133-l > .evolutions.l.e > .evo.box > .evo.box.e,
+  .modal.pokemon.pokemon-133-l > .evolutions.l.e > .evo.box > .evo.box.f {
+    flex-direction: column;
+  }
 }
 
 .hidden {
